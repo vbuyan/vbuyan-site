@@ -1,0 +1,18 @@
+{
+  "name": "vbuyan-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.4.12",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.5"
+  },
+  "devDependencies": {
+    "pagefind": "1.6.0"
+  }
+}

@@ -1,0 +1,16 @@
+---
+import Base from "../../layouts/Base.astro";
+const items = Object.values(import.meta.glob("./*.md", { eager: true })) as any[];
+items.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+---
+<Base title="Notes" description="Short notes on Kubernetes, reliability and GPU platforms.">
+  <div class="prose">
+    <h1>Notes</h1>
+    <p class="lede">Short notes, usually also posted on <a href="https://www.linkedin.com/in/vb29">LinkedIn</a>. Subscribe via <a href="/rss.xml">RSS</a>.</p>
+  </div>
+  <ul class="list">
+    {items.map((n) => (
+      <li><span class="meta">{n.frontmatter.date}</span><a href={n.url + "/"}>{n.frontmatter.title}</a></li>
+    ))}
+  </ul>
+</Base>

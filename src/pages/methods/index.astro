@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+const items = Object.values(import.meta.glob("./*.md", { eager: true })) as any[];
+---
+<Base title="Methods" description="Named, reusable methods for running reliable platforms, each with the reasoning and the evidence behind it.">
+  <div class="prose">
+    <h1>Methods</h1>
+    <p class="lede">Patterns I use and can defend: what problem each solves, how to apply it, how to check
+      it works, and what it costs. Each one came out of a real system, linked from the page.</p>
+  </div>
+  <div class="cards">
+    {items.map((m) => (
+      <a class="card" href={m.url + "/"}>
+        <span class="tag">method</span>
+        <h3>{m.frontmatter.title}</h3>
+        <p>{m.frontmatter.description}</p>
+      </a>
+    ))}
+  </div>
+</Base>

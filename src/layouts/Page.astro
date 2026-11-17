@@ -1,0 +1,13 @@
+---
+import Base from "./Base.astro";
+const { frontmatter } = Astro.props;
+const fm = frontmatter ?? {};
+---
+<Base title={fm.title} description={fm.description} image={fm.image}>
+  <article class="prose">
+    {fm.kind && <p class="meta">{fm.kind}{fm.date && ` · ${fm.date}`}</p>}
+    <h1>{fm.title}</h1>
+    {fm.description && <p class="lede">{fm.description}</p>}
+    <slot />
+  </article>
+</Base>

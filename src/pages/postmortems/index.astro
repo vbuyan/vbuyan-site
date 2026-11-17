@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+const items = Object.values(import.meta.glob("./*.md", { eager: true })) as any[];
+items.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+---
+<Base title="Postmortems" description="Blameless postmortems: what broke, how it was found, and what changed so it cannot happen silently again.">
+  <div class="prose">
+    <h1>Postmortems</h1>
+    <p class="lede">Blameless write-ups of real incidents: timeline, root cause, what went well, what went badly,
+      and the changes that came out of them. Every one of them changed an alert, a default or a design.</p>
+  </div>
+  <ul class="list">
+    {items.map((p) => (
+      <li>
+        <span class="meta">{p.frontmatter.date}</span>
+        <span><a href={p.url + "/"}>{p.frontmatter.title}</a><br /><span class="meta" style="font-family:var(--sans)">{p.frontmatter.description}</span></span>
+      </li>
+    ))}
+  </ul>
+</Base>

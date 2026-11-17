@@ -1,0 +1,64 @@
+---
+import Base from "../layouts/Base.astro";
+const notes = Object.values(import.meta.glob("./notes/*.md", { eager: true })) as any[];
+notes.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+const pms = Object.values(import.meta.glob("./postmortems/*.md", { eager: true })) as any[];
+pms.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+---
+<Base>
+  <section class="hero">
+    <p class="meta">DevOps · Site Reliability Engineering · GPU platforms</p>
+    <h1>Vitalii Buyan</h1>
+    <p class="lede prose">
+      I build and run Kubernetes platforms and care most about the reliability side of the job:
+      infrastructure as code, alerts that catch new failure modes, and postmortems that actually
+      change the system. Lately: sharing expensive GPUs fairly between teams without anyone
+      stepping on anyone.
+    </p>
+    <div class="stats">
+      <div class="stat"><b>3+ yrs</b><span>Kubernetes and AWS in financial services</span></div>
+      <div class="stat"><b>13</b><span>architecture decision records</span></div>
+      <div class="stat"><b>3</b><span>public postmortems</span></div>
+      <div class="stat"><b>10</b><span>GPU queue bypasses blocked at admission</span></div>
+    </div>
+  </section>
+
+  <h2>Start here</h2>
+  <div class="cards">
+    <a class="card" href="/projects/gpu-platform/">
+      <span class="tag">project</span>
+      <h3>gpu-platform</h3>
+      <p>A Kubernetes platform that shares one GPU with production work through a fair queue. kubeadm, Cilium, Argo CD, Terraform, Prometheus.</p>
+    </a>
+    <a class="card" href="/postmortems/2026-11-15-disk-pressure-eviction-storm/">
+      <span class="tag">postmortem</span>
+      <h3>209 pods evicted, zero alerts</h3>
+      <p>A percentage default, a shared disk and monitoring that went down with the node it watched.</p>
+    </a>
+    <a class="card" href="/methods/yield-first-cluster/">
+      <span class="tag">method</span>
+      <h3>Yield-first cluster</h3>
+      <p>How to run Kubernetes next to production work so that the cluster always loses the fight for resources.</p>
+    </a>
+  </div>
+
+  <h2>Methods</h2>
+  <ul class="list">
+    <li><a href="/methods/yield-first-cluster/">Yield-first cluster</a><span class="meta">memory · eviction · oomd</span></li>
+    <li><a href="/methods/shared-gpu-queue/">Shared GPU queue with admission enforcement</a><span class="meta">CDI · CEL · RuntimeClass</span></li>
+  </ul>
+
+  <h2>Postmortems</h2>
+  <ul class="list">
+    {pms.map((p) => (
+      <li><span class="meta">{p.frontmatter.date}</span><a href={p.url + "/"}>{p.frontmatter.title}</a></li>
+    ))}
+  </ul>
+
+  <h2>Notes</h2>
+  <ul class="list">
+    {notes.map((n) => (
+      <li><span class="meta">{n.frontmatter.date}</span><a href={n.url + "/"}>{n.frontmatter.title}</a></li>
+    ))}
+  </ul>
+</Base>
