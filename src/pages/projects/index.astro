@@ -1,0 +1,27 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+<Base title="Projects" description="Systems I have built and run, written up with their decisions, numbers and failures.">
+  <div class="prose">
+    <p class="meta">Projects</p>
+    <h1>Projects</h1>
+    <p class="lede">Systems I have built and run, with the decisions behind them, the numbers, and what broke.</p>
+  </div>
+  <div class="cards" style="margin-top:1.5rem">
+    <a class="card" href="/projects/gpu-platform/">
+      <div class="tag">open source</div>
+      <h3>gpu-platform</h3>
+      <p>A Kubernetes platform that shares one GPU with production work through a fair queue. kubeadm, Cilium, Argo CD, Terraform, Prometheus, admission policy, 13 ADRs.</p>
+    </a>
+    <a class="card" href="/projects/agent-production-line/">
+      <div class="tag m">case study</div>
+      <h3>A production line of AI agents</h3>
+      <p>About fifteen agents with roles, quality gates and a dispatcher on one GPU. What held up, what failed, and how it compares with the research.</p>
+    </a>
+    <a class="card" href="/how-this-site-runs/">
+      <div class="tag">infrastructure</div>
+      <h3>This site</h3>
+      <p>Astro on S3 and CloudFront, Terraform, GitHub Actions with OIDC and no stored keys.</p>
+    </a>
+  </div>
+</Base>

@@ -73,7 +73,8 @@ table { border-collapse: collapse; width: 100%; font-size: 14.5px; display: bloc
 th, td { border-bottom: 1px solid var(--line); padding: .55rem .75rem; text-align: left; vertical-align: top; }
 tr:last-child td { border-bottom: 0; }
 th { font: 600 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-td:first-child { color: var(--muted); font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+td:first-child { color: var(--muted); }
+td { min-width: 7rem; }
 blockquote { margin: 1.5rem 0; padding: .3rem 1rem; border-left: 3px solid var(--a); color: var(--muted); background: var(--panel); border-radius: 0 10px 10px 0; }
 
 /* panels, tiles, cards */
