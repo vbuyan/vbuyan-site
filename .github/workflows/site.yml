@@ -1,0 +1,65 @@
+name: site
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["infra/**", ".github/workflows/infra.yml"]
+  pull_request:
+    paths-ignore: ["infra/**", ".github/workflows/infra.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Check internal links
+        run: npx --yes linkinator@6 dist --recurse --skip "^(?!http://localhost)" --verbosity error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.SITE_LIVE == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://vbuyan.com
+    permissions:
+      contents: read
+      id-token: write # OIDC: short-lived AWS credentials, no stored keys
+    env:
+      BUCKET: vbuyan-site-${{ vars.AWS_ACCOUNT_ID }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/vbuyan-site-deploy
+          aws-region: us-east-1
+      - name: Upload (hashed assets cached for a year, pages revalidated)
+        run: |
+          aws s3 sync dist "s3://$BUCKET" --delete --exclude "*" --include "_astro/*" \
+            --cache-control "public,max-age=31536000,immutable"
+          aws s3 sync dist "s3://$BUCKET" --delete --exclude "_astro/*" \
+            --cache-control "public,max-age=0,must-revalidate"
+      - name: Invalidate CDN
+        run: aws cloudfront create-invalidation --distribution-id "${{ vars.CF_DISTRIBUTION_ID }}" --paths "/*"
