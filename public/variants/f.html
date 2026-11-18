@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variant F · Swiss</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2ef;--ink:#0e0e0e;--red:#e1251b;--muted:#6f6f6a;--line:#0e0e0e;--sans:"Inter Tight",Inter,system-ui,sans-serif;--mono:"JetBrains Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 var(--sans)}
+a{color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+header{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;padding:22px 0;border-bottom:2px solid var(--line);font:600 14px var(--sans)}
+header .n{grid-column:span 4}header nav{grid-column:7/13;display:flex;justify-content:space-between}
+header nav a{text-decoration:none}
+.hero{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;padding:40px 0 30px;border-bottom:2px solid var(--line)}
+.hero h1{grid-column:1/13;font:900 clamp(56px,11vw,168px)/.86 var(--sans);letter-spacing:-.055em;margin:0}
+.hero h1 span{color:var(--red)}
+.hero .l{grid-column:1/6;font:600 22px/1.3 var(--sans);margin-top:26px}
+.hero .r{grid-column:7/13;margin-top:26px;color:#333;font-size:17px}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:2px solid var(--line)}
+.facts div{padding:20px 16px 18px 0;border-right:1px solid #cfcfca}.facts div:last-child{border-right:0}
+.facts b{display:block;font:800 52px/1 var(--sans);letter-spacing:-.04em}.facts span{font:12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.story{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;padding:50px 0}
+.sticky{position:sticky;top:20px;align-self:start}
+.big{font:900 200px/.8 var(--sans);letter-spacing:-.07em;color:var(--red);transition:.3s}
+.cap{font:12px var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:14px}
+.bar{height:10px;background:#d8d8d3;margin-top:24px;position:relative}.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--red);width:0;transition:width .4s}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{min-height:46vh;border-top:1px solid #cfcfca;padding:22px 0 30px;opacity:.28;transition:opacity .35s}
+.step.on{opacity:1}
+.step .t{font:600 13px var(--mono);color:var(--red)}
+.step h3{font:800 34px/1.05 var(--sans);letter-spacing:-.03em;margin:8px 0 10px}
+.step p{margin:0;color:#333;max-width:34em}
+.more{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:2px solid var(--line);margin-bottom:40px}
+.more a{padding:22px 20px 26px 0;border-right:1px solid #cfcfca;text-decoration:none}.more a:last-child{border-right:0}
+.more .k{font:12px var(--mono);color:var(--muted);text-transform:uppercase}.more h4{font:800 26px/1.05 var(--sans);margin:8px 0 0;letter-spacing:-.02em}
+.note{font:12px var(--mono);color:var(--muted);text-align:center;padding-bottom:40px}
+@media(max-width:860px){header nav{display:none}.hero .l,.hero .r{grid-column:1/13}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.story{grid-template-columns:minmax(0,1fr)}.sticky{position:static}.big{font-size:120px}.more{grid-template-columns:minmax(0,1fr)}.more a{border-right:0;border-bottom:1px solid #cfcfca}.step{min-height:auto;opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="n">Vitalii Buyan</div><nav><a href="#">Projects</a><a href="#">Methods</a><a href="#">Postmortems</a><a href="#">Notes</a><a href="#">About</a></nav></header>
+<section class="hero">
+  <h1>Platforms<br>that fail <span>loudly</span><br>and rarely.</h1>
+  <div class="l">DevOps / Site Reliability Engineer.<br>Kubernetes · AWS · Terraform · GPUs.</div>
+  <div class="r">I build Kubernetes platforms that share expensive hardware fairly, and I treat every incident as a chance to change a default, an alert or a design. 3+ years running Kubernetes and AWS in fintech; one open source GPU platform documented end to end.</div>
+</section>
+<section class="facts"><div><b>13</b><span>decision records</span></div><div><b>3</b><span>postmortems</span></div><div><b>10/10</b><span>bypasses blocked</span></div><div><b>8/8</b><span>platform stages shipped</span></div></section>
+
+<section class="story">
+  <div class="sticky">
+    <div class="big" id="big">0</div>
+    <div class="cap" id="cap">pods evicted · scroll the story</div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+  <div class="steps">
+    <div class="step" data-n="0" data-c="pods evicted · 14:00"><div class="t">14:00 · 15 Nov</div><h3>A normal afternoon.</h3><p>The node shares its disk with production work. The disk sits just above 5% free, where it always sits.</p></div>
+    <div class="step" data-n="52" data-c="pods evicted · 16:30"><div class="t">16:27</div><h3>The line dips under 5%.</h3><p>The kubelet's default eviction threshold is 5% free. DiskPressure. Every pod on the node is evicted.</p></div>
+    <div class="step" data-n="172" data-c="pods evicted · 17:05"><div class="t">17:05</div><h3>They come back. They are evicted again.</h3><p>Controllers recreate the pods; the kubelet evicts them. Prometheus is one of them, so the graph goes blank.</p></div>
+    <div class="step" data-n="209" data-c="pods evicted · 22:05"><div class="t">22:05</div><h3>Third wave. Zero alerts.</h3><p>Five and a half hours, three waves, 209 evictions. Found by accident while working on something else.</p></div>
+    <div class="step" data-n="209" data-c="fixed · 23:11"><div class="t">23:11</div><h3>Fixed, and made loud.</h3><p>An absolute eviction floor instead of a percentage. Two new alerts: node pressure and evicted pods. A written postmortem.</p></div>
+  </div>
+</section>
+<section class="more">
+  <a href="#"><div class="k">Project</div><h4>gpu-platform →</h4></a>
+  <a href="#"><div class="k">Method</div><h4>Yield-first cluster →</h4></a>
+  <a href="#"><div class="k">Method</div><h4>Shared GPU queue →</h4></a>
+</section>
+<div class="note">Variant F · “Swiss”. The incident plays out as you scroll; numbers are from the real postmortem.</div>
+</div>
+<script>
+const big=document.getElementById('big'),cap=document.getElementById('cap'),bar=document.getElementById('bar');let cur=0,anim;
+function count(to){cancelAnimationFrame(anim);const from=cur;const t0=performance.now();(function f(t){const k=Math.min((t-t0)/600,1);cur=Math.round(from+(to-from)*k);big.textContent=cur;if(k<1)anim=requestAnimationFrame(f)})(t0)}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));e.target.classList.add('on');count(+e.target.dataset.n);cap.textContent=e.target.dataset.c;bar.style.width=(+e.target.dataset.n/209*100)+'%';big.style.color=e.target.dataset.c.startsWith('fixed')?'#0e0e0e':'#e1251b'}}),{rootMargin:'-45% 0px -45% 0px'});
+document.querySelectorAll('.step').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

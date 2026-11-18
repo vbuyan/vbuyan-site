@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variant A · Control room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090d;--panel:#0d1118;--panel2:#111722;--line:#1d2633;--text:#e7ecf3;--muted:#8b97a8;--dim:#56627a;
+--a:#5eead4;--b:#a78bfa;--k:#60a5fa;--deny:#f87171;--ok:#4ade80;--amber:#fbbf24;--mono:"JetBrains Mono",ui-monospace,monospace;--sans:Inter,system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans)}
+a{color:var(--k);text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;opacity:.35;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);pointer-events:none}
+header{display:flex;align-items:center;gap:18px;padding:18px 0;position:relative}
+.logo{font:700 15px var(--mono);letter-spacing:.02em}.logo b{color:var(--a)}
+.status{display:flex;align-items:center;gap:8px;font:12px var(--mono);color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:99px;background:var(--panel)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.4}}
+nav{margin-left:auto;display:flex;gap:20px;font:13px var(--mono)}nav a{color:var(--muted)}nav a:hover{color:var(--text)}
+.hero>*{min-width:0}.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:40px;align-items:center;padding:56px 0 40px;position:relative}
+.kicker{font:12px var(--mono);color:var(--a);letter-spacing:.12em;text-transform:uppercase}
+h1{font-size:54px;line-height:1.04;letter-spacing:-.035em;margin:14px 0 18px;font-weight:700}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--a),var(--k),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);font-size:18px;max-width:34em}
+.cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+.btn{font:600 14px var(--mono);padding:11px 16px;border-radius:8px;border:1px solid var(--line);color:var(--text);background:var(--panel)}
+.btn.p{background:var(--a);color:#04201b;border-color:var(--a)}
+.who{display:flex;gap:14px;align-items:center;margin-top:30px;color:var(--muted);font-size:14px}
+.ava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1f2937,#334155);display:grid;place-items:center;font:700 15px var(--mono);color:var(--a);border:1px solid var(--line)}
+.panel{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 80px -30px rgba(94,234,212,.15)}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);font:12px var(--mono);color:var(--muted)}
+.ph .t{color:var(--text)}
+#viz{display:block;width:100%;height:auto}
+.legend{display:flex;gap:16px;padding:10px 16px 14px;font:12px var(--mono);color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.log{font:12px var(--mono);color:var(--dim);padding:0 16px 14px;height:66px;overflow:hidden}
+.log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.log .d{color:var(--deny)}.log .g{color:var(--ok)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:10px 0 60px}
+.tile{padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.tile .v{font:700 30px var(--mono);letter-spacing:-.03em}.tile .l{color:var(--muted);font-size:13px}
+.tile .spark{height:26px;margin-top:8px}
+h2{font-size:26px;letter-spacing:-.02em;margin:0 0 18px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:70px}
+.card{padding:20px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);transition:.2s}
+.card:hover{border-color:var(--a);transform:translateY(-2px)}
+.card .tag{font:11px var(--mono);color:var(--a);text-transform:uppercase;letter-spacing:.1em}
+.card h3{margin:8px 0 6px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:14px}
+.note{font:12px var(--mono);color:var(--dim);text-align:center;padding:30px 0 50px}
+@media(max-width:900px){.hero{grid-template-columns:minmax(0,1fr);padding-top:30px}h1{font-size:38px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:1fr}nav{display:none}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="wrap">
+<header>
+  <div class="logo"><b>●</b> vbuyan</div>
+  <div class="status"><span class="dot"></span>all systems normal</div>
+  <nav><a href="#">projects</a><a href="#">methods</a><a href="#">postmortems</a><a href="#">notes</a><a href="#">about</a></nav>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="kicker">DevOps · SRE · GPU platforms</div>
+    <h1>I make shared infrastructure <em>fair, observable and boring.</em></h1>
+    <p class="sub">Kubernetes platforms that stay up, explain themselves and share expensive GPUs between teams without anyone stepping on anyone. Every incident becomes a postmortem, every decision a written record.</p>
+    <div class="cta"><a class="btn p" href="#">See gpu-platform →</a><a class="btn" href="#">Read the postmortems</a></div>
+    <div class="who"><div class="ava">VB</div><div><b style="color:var(--text)">Vitalii Buyan</b><br>3+ years running Kubernetes and AWS in fintech</div></div>
+  </div>
+  <div class="panel">
+    <div class="ph"><span class="t">gpu-queue · live simulation</span><span>1 GPU · 3 tenants</span></div>
+    <svg id="viz" viewBox="0 0 560 300"></svg>
+    <div class="legend"><span><i style="background:var(--a)"></i>team A</span><span><i style="background:var(--b)"></i>team B</span><span><i style="background:var(--k)"></i>k8s pod</span><span><i style="background:var(--deny)"></i>bypass → denied at admission</span></div>
+    <div class="log" id="log"></div>
+  </div>
+</section>
+
+<div class="tiles">
+  <div class="tile"><div class="v">13</div><div class="l">architecture decision records</div></div>
+  <div class="tile"><div class="v">3</div><div class="l">public postmortems</div></div>
+  <div class="tile"><div class="v" style="color:var(--deny)">10/10</div><div class="l">queue bypasses blocked in CI</div></div>
+  <div class="tile"><div class="v" style="color:var(--ok)">0</div><div class="l">long-lived cloud keys</div></div>
+</div>
+
+<h2>Start here</h2>
+<div class="cards">
+  <a class="card" href="#"><div class="tag">project</div><h3>gpu-platform</h3><p>kubeadm, Cilium, Argo CD, Terraform and Prometheus around one GPU that production already uses.</p></a>
+  <a class="card" href="#"><div class="tag" style="color:var(--deny)">postmortem</div><h3>209 pods evicted, zero alerts</h3><p>A percentage default on a shared disk, and monitoring that went down with its node.</p></a>
+  <a class="card" href="#"><div class="tag" style="color:var(--b)">method</div><h3>Yield-first cluster</h3><p>Run Kubernetes next to production so the cluster always loses the fight for resources.</p></a>
+</div>
+<div class="note">Variant A · “Control room”. The queue panel is a simulation of how the platform behaves, not live data.</div>
+</div>
+
+<script>
+const svg=document.getElementById('viz'),NS='http://www.w3.org/2000/svg',log=document.getElementById('log');
+const C={A:'#5eead4',B:'#a78bfa',K:'#60a5fa',X:'#f87171'};
+function el(t,a,p=svg){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+// static scene
+el('rect',{x:20,y:40,width:110,height:220,rx:10,fill:'#0b1017',stroke:'#1d2633'});
+el('text',{x:75,y:30,'text-anchor':'middle',fill:'#8b97a8','font-size':11,'font-family':'JetBrains Mono'}).textContent='tenants';
+[['team A',C.A,85],['team B',C.B,150],['kubernetes',C.K,215]].forEach(([n,c,y])=>{el('circle',{cx:42,cy:y,r:6,fill:c});el('text',{x:54,y:y+4,fill:'#e7ecf3','font-size':12,'font-family':'JetBrains Mono'}).textContent=n});
+el('rect',{x:190,y:120,width:180,height:60,rx:10,fill:'#0b1017',stroke:'#1d2633'});
+el('text',{x:280,y:110,'text-anchor':'middle',fill:'#8b97a8','font-size':11,'font-family':'JetBrains Mono'}).textContent='fair queue';
+const gate=el('rect',{x:160,y:190,width:4,height:70,fill:'#f87171',opacity:.0});
+el('text',{x:162,y:278,'text-anchor':'middle',fill:'#f87171','font-size':10,'font-family':'JetBrains Mono',opacity:.8}).textContent='admission';
+el('rect',{x:430,y:95,width:110,height:110,rx:12,fill:'#0f172a',stroke:'#334155'});
+el('text',{x:485,y:85,'text-anchor':'middle',fill:'#8b97a8','font-size':11,'font-family':'JetBrains Mono'}).textContent='GPU';
+const gpuGlow=el('rect',{x:430,y:95,width:110,height:110,rx:12,fill:'none',stroke:'#5eead4','stroke-width':2,opacity:0});
+const gpuLabel=el('text',{x:485,y:156,'text-anchor':'middle',fill:'#56627a','font-size':12,'font-family':'JetBrains Mono'});gpuLabel.textContent='idle';
+const layer=el('g',{});
+let queue=[],holder=null,t=0,id=0;
+function addLog(txt,cls){const d=document.createElement('div');d.textContent=txt;if(cls)d.className=cls;log.prepend(d);while(log.children.length>3)log.lastChild.remove()}
+function spawn(kind){
+  const y={A:85,B:150,K:215}[kind];const n=++id;
+  const c=el('circle',{cx:42,cy:y,r:7,fill:C[kind]},layer);
+  const job={kind,c,x:42,y,n,tx:200+queue.length*24,ty:150,state:'toQueue'};
+  if(kind==='K'&&Math.random()<.28){job.bypass=true;job.tx=162;job.ty=215;job.c.setAttribute('fill',C.X)}
+  else queue.push(job);
+  jobs.push(job);
+}
+const jobs=[];
+function step(){
+  t++;
+  if(t%55===0){const r=Math.random();spawn(r<.38?'A':r<.7?'B':'K')}
+  queue.forEach((j,i)=>{j.tx=200+i*24;j.ty=150});
+  if(!holder&&queue.length&&queue[0].x>=queue[0].tx-1){holder=queue.shift();holder.state='toGpu';holder.tx=485;holder.ty=150;holder.until=t+130+Math.random()*120;
+    addLog(`${new Date().toISOString().slice(11,19)}  turn → ${({A:'team-a',B:'team-b',K:'kube-gpu'})[holder.kind]}  job#${holder.n}`,'g')}
+  if(holder&&t>holder.until){const h=holder;h.state='done';h.tx=600;holder=null}
+  gpuGlow.setAttribute('opacity',holder&&holder.x>470?1:0);
+  if(holder&&holder.x>470){gpuGlow.setAttribute('stroke',C[holder.kind]);gpuLabel.textContent=({A:'team A',B:'team B',K:'k8s pod'})[holder.kind];gpuLabel.setAttribute('fill',C[holder.kind])}else{gpuLabel.textContent=queue.length?'handing off':'idle';gpuLabel.setAttribute('fill','#56627a')}
+  for(let i=jobs.length-1;i>=0;i--){const j=jobs[i];j.x+=(j.tx-j.x)*.06;j.y+=(j.ty-j.y)*.06;j.c.setAttribute('cx',j.x);j.c.setAttribute('cy',j.y);
+    if(j.bypass&&!j.denied&&Math.abs(j.x-j.tx)<2){j.denied=true;gate.setAttribute('opacity',1);setTimeout(()=>gate.setAttribute('opacity',0),400);
+      addLog(`${new Date().toISOString().slice(11,19)}  DENIED pod/gpu-job-${j.n}: GPU pods must use the queue`,'d');j.tx=-40}
+    if((j.denied&&j.x<0)||(j.state==='done'&&j.x>590)){j.c.remove();jobs.splice(i,1)}}
+  requestAnimationFrame(step)}
+spawn('A');spawn('B');spawn('K');step();
+</script>
+</body>
+</html>

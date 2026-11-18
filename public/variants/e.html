@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variant E · Flame graph</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fffdf9;--ink:#1d1a16;--muted:#7a7268;--line:#ece6dc;--mono:"JetBrains Mono",monospace;--serif:"Source Serif 4",Georgia,serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 var(--serif)}
+a{color:#b4330e}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0;font:13px var(--mono);color:var(--muted)}
+header b{color:var(--ink);font-size:15px}
+header nav a{color:var(--muted);margin-left:16px;text-decoration:none}
+.intro{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;padding:30px 0 26px}
+h1{font:600 44px/1.1 var(--serif);letter-spacing:-.02em;margin:0 0 14px}
+.intro p{color:#3f3a33;margin:0}
+.side{font:13px/1.8 var(--mono);color:var(--muted);border-left:2px solid var(--line);padding-left:18px}
+.side b{color:var(--ink)}
+.fg{border:1px solid var(--line);border-radius:8px;padding:14px 14px 8px;background:#fff}
+.fgh{display:flex;justify-content:space-between;align-items:center;font:12px var(--mono);color:var(--muted);margin-bottom:8px;gap:10px;flex-wrap:wrap}
+.fgh b{color:var(--ink);font-size:13px}
+#reset{font:12px var(--mono);border:1px solid var(--line);background:#fff;border-radius:4px;padding:3px 8px;cursor:pointer;visibility:hidden}
+#flame{width:100%;display:block}
+#info{font:12px var(--mono);color:var(--ink);min-height:20px;padding:6px 2px 0}
+.idx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px;padding:40px 0 60px}
+.idx h2{font:600 13px var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:8px;margin:0 0 10px}
+.idx ul{list-style:none;padding:0;margin:0;font-size:16px}.idx li{padding:5px 0}
+.idx .d{font:12px var(--mono);color:var(--muted);margin-right:8px}
+.note{font:12px var(--mono);color:var(--muted);text-align:center;padding-bottom:40px}
+@media(max-width:860px){.intro,.idx{grid-template-columns:minmax(0,1fr)}h1{font-size:32px}header nav{display:none}.side{border-left:0;padding-left:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><b>Vitalii Buyan</b><nav><a href="#">projects</a><a href="#">methods</a><a href="#">postmortems</a><a href="#">notes</a><a href="#">about</a></nav></header>
+<section class="intro">
+  <div>
+    <h1>Where my engineering time goes, as a flame graph.</h1>
+    <p>Performance engineers read flame graphs to see where a program spends its time. Here is the same picture for me: wider means more time, stacked means "inside of". Click any frame to zoom in.</p>
+  </div>
+  <div class="side"><b>DevOps / Site Reliability Engineer</b><br>3+ years Kubernetes and AWS in fintech<br>13 decision records · 3 postmortems<br>GPU platforms · SF Bay Area · remote<br><a href="#">github.com/vbuyan</a></div>
+</section>
+<div class="fg">
+  <div class="fgh"><b>engineering-time.svg</b><span>samples ≈ weeks, illustrative</span><button id="reset">reset zoom</button></div>
+  <svg id="flame"></svg>
+  <div id="info">hover a frame</div>
+</div>
+<section class="idx">
+  <div><h2>Projects</h2><ul><li><a href="#">gpu-platform</a></li><li><a href="#">vbuyan.com (this site, on AWS)</a></li></ul></div>
+  <div><h2>Postmortems</h2><ul><li><span class="d">11-15</span><a href="#">209 pods evicted, zero alerts</a></li><li><span class="d">11-15</span><a href="#">GPU pod without its wrapper</a></li><li><span class="d">11-14</span><a href="#">Cilium vs the host firewall</a></li></ul></div>
+  <div><h2>Methods</h2><ul><li><a href="#">Yield-first cluster</a></li><li><a href="#">Shared GPU queue</a></li></ul></div>
+</section>
+<div class="note">Variant E · “Flame graph”. A nod to how performance engineers read systems; widths are illustrative, not measured.</div>
+</div>
+<script>
+const data={n:'all',v:0,c:[
+ {n:'MoneyGram · DevOps Engineer (2023–now)',c:[
+   {n:'Kubernetes on AWS',c:[{n:'Helm charts',v:18},{n:'EKS / EC2',v:22},{n:'cert-manager · Route 53',v:8},{n:'scaling · upgrades',v:14}]},
+   {n:'Terraform / IaC',c:[{n:'modules',v:14},{n:'terraform import',v:8},{n:'Packer images',v:8}]},
+   {n:'CI/CD',c:[{n:'GitHub Actions',v:16},{n:'Jenkins → GHA',v:8}]},
+   {n:'Observability',c:[{n:'Prometheus',v:10},{n:'Grafana',v:7}]},
+   {n:'Security',c:[{n:'Vault',v:7},{n:'Splunk · Qualys',v:6}]},
+   {n:'Linux / RHEL',v:12},{n:'GCP',v:8},{n:'Ansible',v:8}]},
+ {n:'gpu-platform (2026)',c:[
+   {n:'kubeadm · Cilium',c:[{n:'install + rollback',v:5},{n:'firewall fix',v:2}]},
+   {n:'GPU queue',c:[{n:'CDI · RuntimeClass',v:4},{n:'CEL admission',v:4}]},
+   {n:'GitOps',c:[{n:'Argo CD',v:3},{n:'Terraform',v:3}]},
+   {n:'Monitoring',c:[{n:'alerts',v:3},{n:'exporter',v:2}]},
+   {n:'postmortems · ADRs',v:5},{n:'CI · Trivy',v:3}]},
+ {n:'WGU · Cloud & Network Eng.',c:[{n:'networking',v:5},{n:'cloud',v:5}]},
+ {n:'writing · LinkedIn',v:4}]};
+function sum(d){if(d.c){d.v=d.c.reduce((a,c)=>a+sum(c),0)}return d.v}sum(data);
+const svg=document.getElementById('flame'),info=document.getElementById('info'),reset=document.getElementById('reset'),NS='http://www.w3.org/2000/svg';
+const H=24,W=1000;
+function depth(d){return d.c?1+Math.max(...d.c.map(depth)):1}
+const D=depth(data);svg.setAttribute('viewBox',`0 0 ${W} ${D*H+2}`);
+function color(n){let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))>>>0;const r=205+h%50,g=80+(h>>3)%110,b=40+(h>>7)%45;return `rgb(${r},${g},${b})`}
+let focus=data;
+function draw(){svg.innerHTML='';
+ const x0=0;(function rec(d,x,w,lvl){
+   if(w<0.5)return;const y=(D-1-lvl)*H;
+   const g=document.createElementNS(NS,'g');g.style.cursor='pointer';
+   const r=document.createElementNS(NS,'rect');Object.entries({x,y,width:Math.max(w-1,0),height:H-1,rx:2,fill:d===data?'#e8e1d5':color(d.n)}).forEach(([k,v])=>r.setAttribute(k,v));g.appendChild(r);
+   if(w>40){const t=document.createElementNS(NS,'text');t.setAttribute('x',x+5);t.setAttribute('y',y+16);t.setAttribute('font-size',12);t.setAttribute('font-family','JetBrains Mono');t.setAttribute('fill','#1d1a16');
+     const label=d===data?'all engineering time':d.n;const maxc=Math.floor((w-10)/7.3);t.textContent=label.length>maxc?label.slice(0,Math.max(maxc-1,1))+'…':label;g.appendChild(t)}
+   g.addEventListener('mouseenter',()=>{info.textContent=`${d===data?'all':d.n}  ·  ${d.v} samples  ·  ${(100*d.v/data.v).toFixed(1)}%`;r.setAttribute('stroke','#1d1a16')});
+   g.addEventListener('mouseleave',()=>r.removeAttribute('stroke'));
+   g.addEventListener('click',()=>{focus=d;reset.style.visibility=d===data?'hidden':'visible';draw()});
+   svg.appendChild(g);
+   if(d.c){let cx=x;for(const c of d.c){const cw=w*c.v/d.v;rec(c,cx,cw,lvl+1);cx+=cw}}
+ })(focus,0,W,pathDepth(focus));
+ // ancestors of focus drawn full width below
+ let p=parents(focus);p.forEach((a,i)=>{const y=(D-1-i)*H;const r=document.createElementNS(NS,'rect');Object.entries({x:0,y,width:W-1,height:H-1,rx:2,fill:'#e8e1d5',opacity:.7}).forEach(([k,v])=>r.setAttribute(k,v));svg.appendChild(r);
+  const t=document.createElementNS(NS,'text');t.setAttribute('x',5);t.setAttribute('y',y+16);t.setAttribute('font-size',12);t.setAttribute('font-family','JetBrains Mono');t.setAttribute('fill','#7a7268');t.textContent=a===data?'all engineering time':a.n;svg.appendChild(t);
+  r.style.cursor='pointer';r.addEventListener('click',()=>{focus=a;reset.style.visibility=a===data?'hidden':'visible';draw()})});
+}
+function parents(t){const out=[];(function f(d,stack){if(d===t){out.push(...stack);return true}if(d.c)for(const c of d.c)if(f(c,stack.concat(d)))return true;return false})(data,[]);return out}
+function pathDepth(t){return parents(t).length}
+reset.onclick=()=>{focus=data;reset.style.visibility='hidden';draw()};
+draw();
+</script>
+</body>
+</html>

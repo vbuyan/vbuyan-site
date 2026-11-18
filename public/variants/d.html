@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variant D · Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d2a4a;--bg2:#0b2440;--ink:#e8f1ff;--line:#5b8fd1;--faint:rgba(140,185,240,.18);--hi:#ffd166;--red:#ff7b7b;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);
+background-image:linear-gradient(var(--faint) 1px,transparent 1px),linear-gradient(90deg,var(--faint) 1px,transparent 1px),linear-gradient(rgba(140,185,240,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(140,185,240,.07) 1px,transparent 1px);
+background-size:100px 100px,100px 100px,20px 20px,20px 20px}
+a{color:var(--hi)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.frame{border:2px solid var(--line);margin:24px 0;position:relative}
+.titleblock{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));border-top:2px solid var(--line);font:12px var(--mono)}
+.titleblock div{padding:10px 14px;border-left:1px solid var(--line)}.titleblock div:first-child{border-left:0}
+.titleblock b{display:block;font:600 15px var(--sans);letter-spacing:.02em}
+.titleblock span{color:#9cc0ec;text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+.head{display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);font:12px var(--mono);color:#9cc0ec}
+.head nav a{color:#cfe2ff;margin-left:18px;text-decoration:none}
+.top{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:0}
+.left{padding:34px 26px;border-right:1px solid var(--line)}
+.dwg{font:12px var(--mono);color:#9cc0ec;letter-spacing:.12em}
+h1{font:700 46px/1.05 var(--sans);letter-spacing:-.02em;margin:12px 0 16px}
+h1 u{text-decoration:none;border-bottom:3px solid var(--hi)}
+.left p{color:#cfe2ff}
+.spec{list-style:none;padding:0;margin:22px 0 0;font:13px var(--mono)}
+.spec li{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(140,185,240,.4);padding:6px 0}.spec li b{color:var(--hi);font-weight:600}
+.right{position:relative;padding:12px}
+#d{width:100%;height:auto;display:block}
+.tip{position:absolute;max-width:260px;background:#06182c;border:1px solid var(--hi);padding:10px 12px;font:13px/1.45 var(--sans);color:var(--ink);pointer-events:none;opacity:0;transition:opacity .15s}
+.tip b{color:var(--hi);display:block;font:600 12px var(--mono);margin-bottom:4px}
+.hint{font:11px var(--mono);color:#9cc0ec;padding:0 14px 10px}
+.sections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.sections a{padding:20px 22px;border-left:1px solid var(--line);color:var(--ink);text-decoration:none}.sections a:first-child{border-left:0}
+.sections a:hover{background:rgba(255,209,102,.06)}
+.sections .n{font:11px var(--mono);color:#9cc0ec}.sections h3{margin:6px 0 4px;font-size:18px}.sections p{margin:0;color:#cfe2ff;font-size:14px}
+.note{font:12px var(--mono);color:#9cc0ec;text-align:center;padding:4px 0 30px}
+@media(max-width:900px){.top,.sections{grid-template-columns:minmax(0,1fr)}.left{border-right:0;border-bottom:1px solid var(--line)}h1{font-size:34px}.titleblock{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.head nav{display:none}.sections a{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="frame">
+  <div class="head"><span>VBUYAN.COM / SHEET 01 OF 05</span><nav><a href="#">projects</a><a href="#">methods</a><a href="#">postmortems</a><a href="#">notes</a><a href="#">about</a></nav></div>
+  <div class="top">
+    <div class="left">
+      <div class="dwg">DWG · PLATFORM ENGINEERING</div>
+      <h1>I design platforms the way engineers draw machines: <u>every part has a reason.</u></h1>
+      <p>Vitalii Buyan, DevOps and Site Reliability Engineer. Kubernetes, AWS, Terraform, GitOps and observability, and lately fair sharing of expensive GPUs. Every decision is written down, every incident has a postmortem.</p>
+      <ul class="spec"><li>Experience<b>3+ yrs · fintech</b></li><li>Decision records<b>13</b></li><li>Postmortems<b>3</b></li><li>Queue bypasses blocked<b>10 / 10</b></li><li>Location<b>SF Bay Area · remote</b></li></ul>
+    </div>
+    <div class="right">
+      <svg id="d" viewBox="0 0 640 430"></svg>
+      <div class="hint">↖ hover any part of the drawing</div>
+      <div class="tip" id="tip"></div>
+    </div>
+  </div>
+  <div class="sections">
+    <a href="#"><div class="n">DETAIL A</div><h3>gpu-platform</h3><p>The full assembly: kubeadm, Cilium, Argo CD, Terraform, Prometheus.</p></a>
+    <a href="#"><div class="n">DETAIL B</div><h3>Postmortems</h3><p>What failed, how it was found, what changed so it cannot fail silently again.</p></a>
+    <a href="#"><div class="n">DETAIL C</div><h3>Methods</h3><p>Yield-first cluster · Shared GPU queue with admission enforcement.</p></a>
+  </div>
+  <div class="titleblock"><div><span>Drawn by</span><b>Vitalii Buyan</b></div><div><span>Scale</span><b>1 : 1</b></div><div><span>Rev</span><b>2026-11</b></div><div><span>Status</span><b style="color:var(--hi)">In service</b></div></div>
+</div>
+<div class="note">Variant D · “Blueprint”. The drawing is interactive: each part explains what it does and why.</div>
+</div>
+<script>
+const s=document.getElementById('d'),tip=document.getElementById('tip'),NS='http://www.w3.org/2000/svg';
+function el(t,a,p=s){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+const parts=[
+ ['git','GitHub · protected main',10,30,180,56,'Single source of truth. Branch protection with 4 required checks; nobody pushes around CI.'],
+ ['ci','CI · tests · Trivy · kind',10,120,180,56,'Lint, unit tests, every chart rendered and validated, admission policy tested against 10 bypasses in a kind cluster, images scanned by Trivy.'],
+ ['argo','Argo CD · app of apps',220,30,190,56,'Applies everything from Git and upgrades itself. Terraform covers only its bootstrap and the GitHub repo.'],
+ ['adm','CEL admission policy',220,140,190,56,'ValidatingAdmissionPolicy, no webhook. Rejects any GPU pod that is not wrapped in the queue client.'],
+ ['pods','GPU pods · RuntimeClass',220,250,190,56,'CDI devices injected by a gpu-queue RuntimeClass. Plain runc for every other pod.'],
+ ['mon','Prometheus · Alertmanager',220,360,190,50,'Alerts tuned to this host: node pressure, evictions, memory, GPU. Metrics read from the queue, never from NVML.'],
+ ['q','Fair GPU queue',450,190,160,70,'The host queue the teams already used. Pods join it as their own tenant and wait their turn.'],
+ ['gpu','GPU',470,320,120,80,'One card. Whoever holds the turn gets it; the next waiter gets it the moment the process exits.'],
+ ['teams','Team A · Team B',450,40,160,60,'Production work that was here first. The cluster must never slow it down: it yields memory first and never skips the queue.'],
+];
+const P={};
+el('defs',{}).innerHTML='<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b8fd1"/></marker>';
+const lines=[['git','argo'],['git','ci'],['argo','adm'],['adm','pods'],['pods','q'],['teams','q'],['q','gpu'],['argo','mon']];
+parts.forEach(p=>P[p[0]]=p);
+const c=k=>[P[k][2]+P[k][4]/2,P[k][3]+P[k][5]/2];
+lines.forEach(([a,b])=>{const [x1,y1]=c(a),[x2,y2]=c(b);el('path',{d:`M${x1},${y1} L${x2},${y2}`,stroke:'#5b8fd1','stroke-width':1.5,fill:'none','stroke-dasharray':'5 4','marker-end':'url(#ar)'})});
+// moving token on pods->q->gpu
+const tok=el('circle',{r:5,fill:'#ffd166'});let tt=0;
+(function anim(){tt=(tt+.004)%1;const path=[c('pods'),c('q'),c('gpu')];const seg=tt<.5?0:1,f=(tt%.5)*2;const [x1,y1]=path[seg],[x2,y2]=path[seg+1];tok.setAttribute('cx',x1+(x2-x1)*f);tok.setAttribute('cy',y1+(y2-y1)*f);requestAnimationFrame(anim)})();
+parts.forEach(([k,n,x,y,w,h,txt])=>{
+ const g=el('g',{style:'cursor:help'});
+ const r=el('rect',{x,y,width:w,height:h,fill:k==='gpu'?'#06182c':'#0d2a4a',stroke:k==='adm'?'#ff7b7b':'#cfe2ff','stroke-width':1.5},g);
+ el('text',{x:x+w/2,y:y+h/2+4,'text-anchor':'middle',fill:'#e8f1ff','font-size':11,'font-family':'IBM Plex Mono'},g).textContent=n;
+ g.addEventListener('mouseenter',e=>{r.setAttribute('stroke','#ffd166');tip.innerHTML=`<b>${n}</b>${txt}`;tip.style.opacity=1});
+ g.addEventListener('mousemove',e=>{const R=s.parentNode.getBoundingClientRect();tip.style.left=Math.min(e.clientX-R.left+14,R.width-270)+'px';tip.style.top=(e.clientY-R.top+14)+'px'});
+ g.addEventListener('mouseleave',()=>{r.setAttribute('stroke',k==='adm'?'#ff7b7b':'#cfe2ff');tip.style.opacity=0});
+});
+// dimension line
+el('line',{x1:10,y1:415,x2:190,y2:415,stroke:'#9cc0ec'});el('text',{x:100,y:428,'text-anchor':'middle',fill:'#9cc0ec','font-size':10,'font-family':'IBM Plex Mono'}).textContent='delivery';
+</script>
+</body>
+</html>

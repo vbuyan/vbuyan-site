@@ -5,13 +5,13 @@ const { title, description = "Vitalii Buyan: DevOps and Site Reliability Enginee
 const fullTitle = title ? `${title} · Vitalii Buyan` : "Vitalii Buyan · DevOps / SRE";
 const path = Astro.url.pathname;
 const nav = [
-  ["/projects/gpu-platform/", "Projects"],
-  ["/methods/", "Methods"],
-  ["/postmortems/", "Postmortems"],
-  ["/notes/", "Notes"],
-  ["/tools/", "Tools"],
-  ["/about/", "About"],
-  ["/search/", "Search"],
+  ["/projects/gpu-platform/", "projects"],
+  ["/methods/", "methods"],
+  ["/postmortems/", "postmortems"],
+  ["/notes/", "notes"],
+  ["/tools/", "tools"],
+  ["/about/", "about"],
+  ["/search/", "search"],
 ];
 const canonical = new URL(path, Astro.site);
 ---
@@ -25,6 +25,10 @@ const canonical = new URL(path, Astro.site);
   <link rel="canonical" href={canonical} />
   <link rel="alternate" type="application/rss+xml" title="Vitalii Buyan: notes" href="/rss.xml" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" />
+  <meta name="theme-color" content="#07090d" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
@@ -36,9 +40,11 @@ const canonical = new URL(path, Astro.site);
   </script>
 </head>
 <body>
+  <div class="grid-bg" aria-hidden="true"></div>
   <header class="site">
     <div class="wrap">
-      <a class="brand" href="/">vbuyan</a>
+      <a class="brand" href="/"><b>●</b> vbuyan</a>
+      <span class="status"><span class="dot"></span>open to work · remote</span>
       <nav class="main" aria-label="Main">
         {nav.map(([href, label]) => (
           <a href={href} aria-current={path.startsWith(href) ? "page" : undefined}>{label}</a>
@@ -65,9 +71,10 @@ const canonical = new URL(path, Astro.site);
   <script is:inline>
     document.getElementById("theme").addEventListener("click", () => {
       const root = document.documentElement;
-      const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+      const dark = root.dataset.theme !== "light";
       root.dataset.theme = dark ? "light" : "dark";
       try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+      if (document.getElementById("viz")) location.reload();
     });
   </script>
 </body>

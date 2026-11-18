@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variant B · Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f3ec;--ink:#16161a;--muted:#6b6760;--line:#dcd6ca;--accent:#c2410c;--blue:#1e40af;--paper:#fffdf8;--serif:Fraunces,Georgia,serif;--sans:Inter,system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 var(--sans)}
+a{color:var(--ink)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+header{display:flex;align-items:baseline;justify-content:space-between;padding:22px 0;border-bottom:2px solid var(--ink)}
+.name{font:800 22px var(--serif);letter-spacing:-.02em}
+nav{display:flex;gap:22px;font:500 14px var(--sans)}nav a{text-decoration:none;color:var(--muted)}
+.masthead{display:grid;grid-template-columns:1.3fr .7fr;gap:50px;padding:60px 0 50px;border-bottom:1px solid var(--line)}
+.kicker{font:500 13px var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.14em}
+h1{font:800 72px/1 var(--serif);letter-spacing:-.04em;margin:14px 0 22px}
+h1 span{color:var(--accent);font-style:italic;font-weight:600}
+.dek{font:400 21px/1.5 var(--serif);color:#2d2b27;max-width:30em}
+aside{border-left:1px solid var(--line);padding-left:30px;font-size:15px;color:var(--muted)}
+aside .portrait{width:120px;height:150px;background:linear-gradient(160deg,#d6cfc2,#bdb4a4);border-radius:4px;display:grid;place-items:end start;padding:10px;font:600 12px var(--mono);color:#fff;margin-bottom:16px}
+aside b{color:var(--ink)}
+.facts{list-style:none;padding:0;margin:16px 0 0;font:14px var(--mono)}.facts li{padding:7px 0;border-top:1px dashed var(--line)}
+.feature{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;padding:56px 0;border-bottom:1px solid var(--line);align-items:center}
+.feature .label{font:500 12px var(--mono);color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.feature h2{font:800 40px/1.08 var(--serif);letter-spacing:-.03em;margin:10px 0 14px}
+.feature p{color:#3a3732}
+.chart{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 18px 10px}
+.chart .ct{font:600 14px var(--sans);margin-bottom:2px}.chart .cs{font:12px var(--mono);color:var(--muted);margin-bottom:8px}
+#chart{width:100%;height:auto;display:block;cursor:crosshair}
+.read{display:inline-block;margin-top:14px;font:600 15px var(--sans);color:var(--accent);text-decoration:none;border-bottom:2px solid var(--accent)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:40px 0 60px}
+.col{padding:0 26px;border-left:1px solid var(--line)}.col:first-child{border-left:0;padding-left:0}
+.col .label{font:500 12px var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.col h3{font:700 24px/1.15 var(--serif);margin:10px 0 8px;letter-spacing:-.02em}
+.col p{color:var(--muted);font-size:15px;margin:0}
+.note{font:12px var(--mono);color:var(--muted);text-align:center;padding:0 0 40px}
+@media(max-width:900px){.masthead,.feature{grid-template-columns:1fr}h1{font-size:46px}aside{border-left:0;padding-left:0}.cols{grid-template-columns:1fr;gap:28px}.col{border-left:0;padding:0}nav{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="name">Vitalii Buyan</div><nav><a href="#">Projects</a><a href="#">Methods</a><a href="#">Postmortems</a><a href="#">Notes</a><a href="#">About</a></nav></header>
+
+<section class="masthead">
+  <div>
+    <div class="kicker">Site Reliability · Platforms · GPUs</div>
+    <h1>Reliability is a <span>habit</span>, not a feature.</h1>
+    <p class="dek">I build Kubernetes platforms that share expensive hardware fairly, and I write down everything that goes wrong, so it only goes wrong once.</p>
+  </div>
+  <aside>
+    <div class="portrait">photo</div>
+    <b>DevOps / Site Reliability Engineer</b>, San Francisco Bay Area. 3+ years running Kubernetes and AWS in financial services.
+    <ul class="facts"><li>13 decision records</li><li>3 public postmortems</li><li>1 GPU, 3 tenants, 0 collisions</li></ul>
+  </aside>
+</section>
+
+<section class="feature">
+  <div>
+    <div class="label">Postmortem · 15 Nov 2026</div>
+    <h2>209 pods evicted in one evening. Zero alerts.</h2>
+    <p>The disk sat just above 5% free; the kubelet's default eviction threshold is 5% free. Three waves of evictions over five and a half hours, and Prometheus was evicted too, leaving a hole in the graph exactly where the incident is.</p>
+    <a class="read" href="#">Read the full postmortem →</a>
+  </div>
+  <div class="chart">
+    <div class="ct">Free space vs eviction threshold</div>
+    <div class="cs">hover the chart · % of disk free, PST</div>
+    <svg id="chart" viewBox="0 0 640 300"></svg>
+  </div>
+</section>
+
+<section class="cols">
+  <div class="col"><div class="label">Project</div><h3>gpu-platform</h3><p>A Kubernetes platform around one GPU that production already uses: kubeadm, Cilium, Argo CD, Terraform, Prometheus.</p></div>
+  <div class="col"><div class="label">Method</div><h3>Yield-first cluster</h3><p>How to run Kubernetes next to production so that when resources run out, the cluster always loses.</p></div>
+  <div class="col"><div class="label">Method</div><h3>Shared GPU queue</h3><p>Keep the GPU outside the scheduler and make every pod wait its turn, enforced at admission.</p></div>
+</section>
+<div class="note">Variant B · “Editorial”. Chart shape follows the real incident; values are shown as % of disk.</div>
+</div>
+<script>
+const s=document.getElementById('chart'),NS='http://www.w3.org/2000/svg';
+const X0=50,X1=620,Y0=20,Y1=250,T0=14*60,T1=24*60+30,V0=4.6,V1=7;
+const x=t=>X0+(t-T0)/(T1-T0)*(X1-X0),y=v=>Y1-(v-V0)/(V1-V0)*(Y1-Y0);
+function el(t,a,p=s){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e}
+const m=h=>h*60;
+el('rect',{x:x(m(16)+27),y:Y0,width:x(m(22)+4)-x(m(16)+27),height:Y1-Y0,fill:'#c2410c',opacity:.08});
+el('text',{x:(x(m(16)+27)+x(m(22)+4))/2,y:Y0+18,'text-anchor':'middle',fill:'#c2410c','font-size':12,'font-family':'IBM Plex Mono'}).textContent='DiskPressure · no metrics';
+for(const v of [5,5.5,6,6.5,7]){el('line',{x1:X0,x2:X1,y1:y(v),y2:y(v),stroke:'#e6e0d4'});el('text',{x:X0-8,y:y(v)+4,'text-anchor':'end','font-size':11,fill:'#8a857c','font-family':'IBM Plex Mono'}).textContent=v.toFixed(1)}
+for(const h of [14,16,18,20,22,24])el('text',{x:x(m(h)),y:Y1+20,'text-anchor':'middle','font-size':11,fill:'#8a857c','font-family':'IBM Plex Mono'}).textContent=(h%24)+':00';
+el('line',{x1:X0,x2:X1,y1:y(5),y2:y(5),stroke:'#c2410c','stroke-width':2,'stroke-dasharray':'7 5'});
+el('text',{x:x(20*60+10),y:y(5)-8,'text-anchor':'middle','font-size':12,fill:'#c2410c','font-family':'IBM Plex Mono'}).textContent='eviction threshold 5%';
+// approximate series (shape of the incident)
+const pts=[];for(let t=m(14);t<=m(16)+27;t+=6)pts.push([t,5.25+.08*Math.sin(t/17)+.04*Math.sin(t/5)]);pts.push([m(16)+27,4.98]);
+const pts2=[[m(22)+4,5.02],[m(22)+20,5.3],[m(22)+40,5.6],[m(22)+48,6.6],[m(23)+10,6.62],[m(23)+40,6.58],[m(24)+20,6.55]];
+const path=p=>p.map((q,i)=>(i?'L':'M')+x(q[0]).toFixed(1)+','+y(q[1]).toFixed(1)).join(' ');
+el('path',{d:path(pts),fill:'none',stroke:'#1e40af','stroke-width':2.5});el('path',{d:path(pts2),fill:'none',stroke:'#1e40af','stroke-width':2.5});
+[[m(16)+30,52,0],[m(17)+5,172,1],[m(22)+5,209,0]].forEach(([t,n,up])=>{el('circle',{cx:x(t),cy:Y1-8-up*22,r:5,fill:'#c2410c'});el('text',{x:x(t)+8,y:Y1-4-up*22,'font-size':11,fill:'#c2410c','font-weight':600,'font-family':'IBM Plex Mono'}).textContent=n+' evicted'});
+const vl=el('line',{y1:Y0,y2:Y1,stroke:'#16161a','stroke-width':1,opacity:0});const tip=el('text',{y:Y0+38,'font-size':12,fill:'#16161a','font-family':'IBM Plex Mono',opacity:0});
+s.addEventListener('mousemove',e=>{const r=s.getBoundingClientRect();const px=(e.clientX-r.left)/r.width*640;if(px<X0||px>X1)return;const t=T0+(px-X0)/(X1-X0)*(T1-T0);
+ const all=pts.concat(pts2);let best=null;for(const q of all)if(!best||Math.abs(q[0]-t)<Math.abs(best[0]-t))best=q;
+ const gap=t>m(16)+27&&t<m(22)+4;vl.setAttribute('x1',px);vl.setAttribute('x2',px);vl.setAttribute('opacity',.4);
+ const hh=Math.floor(t/60)%24,mm=String(Math.floor(t%60)).padStart(2,'0');tip.textContent=gap?`${hh}:${mm} · no data: Prometheus evicted`:`${hh}:${mm} · ${best[1].toFixed(2)}% free`;
+ tip.setAttribute('x',Math.min(px+8,X1-230));tip.setAttribute('opacity',1)});
+s.addEventListener('mouseleave',()=>{vl.setAttribute('opacity',0);tip.setAttribute('opacity',0)});
+</script>
+</body>
+</html>

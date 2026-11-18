@@ -7,46 +7,57 @@ pms.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 ---
 <Base>
   <section class="hero">
-    <p class="meta">DevOps · Site Reliability Engineering · GPU platforms</p>
-    <h1>Vitalii Buyan</h1>
-    <p class="lede prose">
-      I build and run Kubernetes platforms and care most about the reliability side of the job:
-      infrastructure as code, alerts that catch new failure modes, and postmortems that actually
-      change the system. Lately: sharing expensive GPUs fairly between teams without anyone
-      stepping on anyone.
-    </p>
-    <div class="stats">
-      <div class="stat"><b>3+ yrs</b><span>Kubernetes and AWS in financial services</span></div>
-      <div class="stat"><b>13</b><span>architecture decision records</span></div>
-      <div class="stat"><b>3</b><span>public postmortems</span></div>
-      <div class="stat"><b>10</b><span>GPU queue bypasses blocked at admission</span></div>
+    <div>
+      <div class="kicker">DevOps · SRE · GPU platforms</div>
+      <h1>I make shared infrastructure <em>fair, observable and boring.</em></h1>
+      <p class="sub">Kubernetes platforms that stay up, explain themselves and share expensive GPUs between teams without anyone stepping on anyone. Every incident becomes a postmortem, every decision a written record.</p>
+      <div class="cta">
+        <a class="btn p" href="/projects/gpu-platform/">See gpu-platform →</a>
+        <a class="btn" href="/postmortems/">Read the postmortems</a>
+      </div>
+      <div class="who">
+        <div class="ava">VB</div>
+        <div><b style="color:var(--text)">Vitalii Buyan</b><br />3+ years running Kubernetes and AWS in fintech</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="t">gpu-queue · simulation</span><span>1 GPU · 3 tenants</span></div>
+      <svg id="viz" viewBox="0 0 560 300" role="img" aria-label="Animated simulation: jobs from two teams and Kubernetes wait in one fair queue for a single GPU; GPU pods that try to skip the queue are denied at admission."></svg>
+      <div class="legend">
+        <span><i style="background:var(--a)"></i>team A</span>
+        <span><i style="background:var(--b)"></i>team B</span>
+        <span><i style="background:var(--k)"></i>k8s pod</span>
+        <span><i style="background:var(--deny)"></i>bypass → denied at admission</span>
+      </div>
+      <div class="log" id="log" aria-hidden="true"></div>
     </div>
   </section>
+
+  <div class="tiles">
+    <div class="tile"><div class="v">13</div><div class="l">architecture decision records</div></div>
+    <div class="tile"><div class="v">{pms.length}</div><div class="l">public postmortems</div></div>
+    <div class="tile"><div class="v" style="color:var(--deny)">10/10</div><div class="l">queue bypasses blocked in CI</div></div>
+    <div class="tile"><div class="v" style="color:var(--ok)">8/8</div><div class="l">platform stages shipped</div></div>
+  </div>
 
   <h2>Start here</h2>
   <div class="cards">
     <a class="card" href="/projects/gpu-platform/">
-      <span class="tag">project</span>
+      <div class="tag">project</div>
       <h3>gpu-platform</h3>
-      <p>A Kubernetes platform that shares one GPU with production work through a fair queue. kubeadm, Cilium, Argo CD, Terraform, Prometheus.</p>
+      <p>kubeadm, Cilium, Argo CD, Terraform and Prometheus around one GPU that production already uses.</p>
     </a>
     <a class="card" href="/postmortems/2026-11-15-disk-pressure-eviction-storm/">
-      <span class="tag">postmortem</span>
+      <div class="tag pm">postmortem</div>
       <h3>209 pods evicted, zero alerts</h3>
-      <p>A percentage default, a shared disk and monitoring that went down with the node it watched.</p>
+      <p>A percentage default on a shared disk, and monitoring that went down with its node.</p>
     </a>
     <a class="card" href="/methods/yield-first-cluster/">
-      <span class="tag">method</span>
+      <div class="tag m">method</div>
       <h3>Yield-first cluster</h3>
-      <p>How to run Kubernetes next to production work so that the cluster always loses the fight for resources.</p>
+      <p>Run Kubernetes next to production so the cluster always loses the fight for resources.</p>
     </a>
   </div>
-
-  <h2>Methods</h2>
-  <ul class="list">
-    <li><a href="/methods/yield-first-cluster/">Yield-first cluster</a><span class="meta">memory · eviction · oomd</span></li>
-    <li><a href="/methods/shared-gpu-queue/">Shared GPU queue with admission enforcement</a><span class="meta">CDI · CEL · RuntimeClass</span></li>
-  </ul>
 
   <h2>Postmortems</h2>
   <ul class="list">
@@ -55,10 +66,76 @@ pms.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
     ))}
   </ul>
 
+  <h2>Methods</h2>
+  <ul class="list">
+    <li><a href="/methods/yield-first-cluster/">Yield-first cluster</a><span class="meta">memory · eviction · oomd</span></li>
+    <li><a href="/methods/shared-gpu-queue/">Shared GPU queue with admission enforcement</a><span class="meta">CDI · CEL · RuntimeClass</span></li>
+  </ul>
+
   <h2>Notes</h2>
   <ul class="list">
     {notes.map((n) => (
       <li><span class="meta">{n.frontmatter.date}</span><a href={n.url + "/"}>{n.frontmatter.title}</a></li>
     ))}
   </ul>
+
+  <script is:inline>
+  (function () {
+    const svg = document.getElementById("viz"), log = document.getElementById("log"), NS = "http://www.w3.org/2000/svg";
+    if (!svg) return;
+    const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+    const C = () => ({ A: css("--a"), B: css("--b"), K: css("--k"), X: css("--deny"), line: css("--line"), muted: css("--muted"), dim: css("--dim"), text: css("--text"), panel: css("--code-bg") });
+    let P = C();
+    const F = "JetBrains Mono, monospace";
+    function el(t, a, p = svg) { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; }
+    const box = (x, y, w, h, r) => el("rect", { x, y, width: w, height: h, rx: r, fill: P.panel, stroke: P.line });
+    const label = (x, y, txt, fill, size = 11, anchor = "middle") => { const t = el("text", { x, y, "text-anchor": anchor, fill, "font-size": size, "font-family": F }); t.textContent = txt; return t; };
+    box(20, 40, 110, 220, 10); label(75, 30, "tenants", P.muted);
+    [["team A", P.A, 85], ["team B", P.B, 150], ["kubernetes", P.K, 215]].forEach(([n, c, y]) => { el("circle", { cx: 42, cy: y, r: 6, fill: c }); label(54, y + 4, n, P.text, 12, "start"); });
+    box(190, 120, 180, 60, 10); label(280, 110, "fair queue", P.muted);
+    const gate = el("rect", { x: 160, y: 190, width: 4, height: 70, fill: P.X, opacity: 0 });
+    label(162, 278, "admission", P.X, 10);
+    el("rect", { x: 430, y: 95, width: 110, height: 110, rx: 12, fill: P.panel, stroke: P.line });
+    label(485, 85, "GPU", P.muted);
+    const glow = el("rect", { x: 430, y: 95, width: 110, height: 110, rx: 12, fill: "none", stroke: P.A, "stroke-width": 2, opacity: 0 });
+    const gpuLabel = label(485, 156, "idle", P.dim, 12);
+    const layer = el("g", {});
+    const names = { A: "team-a", B: "team-b", K: "kube-gpu" }, shown = { A: "team A", B: "team B", K: "k8s pod" };
+    let queue = [], holder = null, t = 0, id = 0; const jobs = [];
+    const stamp = () => new Date().toISOString().slice(11, 19);
+    function addLog(txt, cls) { const d = document.createElement("div"); d.textContent = txt; if (cls) d.className = cls; log.prepend(d); while (log.children.length > 3) log.lastChild.remove(); }
+    function spawn(kind) {
+      const y = { A: 85, B: 150, K: 215 }[kind], n = ++id;
+      const c = el("circle", { cx: 42, cy: y, r: 7, fill: P[kind] }, layer);
+      const job = { kind, c, x: 42, y, n, tx: 200 + queue.length * 24, ty: 150, state: "toQueue" };
+      if (kind === "K" && Math.random() < 0.28) { job.bypass = true; job.tx = 162; job.ty = 215; c.setAttribute("fill", P.X); } else queue.push(job);
+      jobs.push(job);
+    }
+    function step() {
+      t++;
+      if (t % 55 === 0) { const r = Math.random(); spawn(r < 0.38 ? "A" : r < 0.7 ? "B" : "K"); }
+      queue.forEach((j, i) => { j.tx = 200 + i * 24; j.ty = 150; });
+      if (!holder && queue.length && queue[0].x >= queue[0].tx - 1) {
+        holder = queue.shift(); holder.state = "toGpu"; holder.tx = 485; holder.ty = 150; holder.until = t + 130 + Math.random() * 120;
+        addLog(`${stamp()}  turn → ${names[holder.kind]}  job#${holder.n}`, "g");
+      }
+      if (holder && t > holder.until) { holder.state = "done"; holder.tx = 600; holder = null; }
+      const on = holder && holder.x > 470;
+      glow.setAttribute("opacity", on ? 1 : 0);
+      if (on) { glow.setAttribute("stroke", P[holder.kind]); gpuLabel.textContent = shown[holder.kind]; gpuLabel.setAttribute("fill", P[holder.kind]); }
+      else { gpuLabel.textContent = queue.length ? "handing off" : "idle"; gpuLabel.setAttribute("fill", P.dim); }
+      for (let i = jobs.length - 1; i >= 0; i--) {
+        const j = jobs[i]; j.x += (j.tx - j.x) * 0.06; j.y += (j.ty - j.y) * 0.06; j.c.setAttribute("cx", j.x); j.c.setAttribute("cy", j.y);
+        if (j.bypass && !j.denied && Math.abs(j.x - j.tx) < 2) {
+          j.denied = true; gate.setAttribute("opacity", 1); setTimeout(() => gate.setAttribute("opacity", 0), 400);
+          addLog(`${stamp()}  DENIED pod/gpu-job-${j.n}: GPU pods must use the queue`, "d"); j.tx = -40;
+        }
+        if ((j.denied && j.x < 0) || (j.state === "done" && j.x > 590)) { j.c.remove(); jobs.splice(i, 1); }
+      }
+      requestAnimationFrame(step);
+    }
+    spawn("A"); spawn("B"); spawn("K");
+    step();
+  })();
+  </script>
 </Base>
