@@ -4,6 +4,8 @@ const notes = Object.values(import.meta.glob("./notes/*.md", { eager: true })) a
 notes.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 const pms = Object.values(import.meta.glob("./postmortems/*.md", { eager: true })) as any[];
 pms.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
+const methods = Object.values(import.meta.glob("./methods/*.md", { eager: true })) as any[];
+methods.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? -1 : 1));
 ---
 <Base>
   <section class="hero">
@@ -68,8 +70,9 @@ pms.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 
   <h2>Methods</h2>
   <ul class="list">
-    <li><a href="/methods/yield-first-cluster/">Yield-first cluster</a><span class="meta">memory · eviction · oomd</span></li>
-    <li><a href="/methods/shared-gpu-queue/">Shared GPU queue with admission enforcement</a><span class="meta">CDI · CEL · RuntimeClass</span></li>
+    {methods.map((m) => (
+      <li><a href={m.url + "/"}>{m.frontmatter.title}</a></li>
+    ))}
   </ul>
 
   <h2>Notes</h2>

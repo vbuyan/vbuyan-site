@@ -1,7 +1,9 @@
 ---
 import "../styles/global.css";
 interface Props { title?: string; description?: string; image?: string }
-const { title, description = "Vitalii Buyan: DevOps and Site Reliability Engineer. Kubernetes, AWS, Terraform, GitOps, observability and GPU platforms.", image = "/img/gpu-platform-overview.png" } = Astro.props;
+const { title, description = "Vitalii Buyan: DevOps and Site Reliability Engineer. Kubernetes, AWS, Terraform, GitOps, observability and GPU platforms." } = Astro.props;
+const ogSlug = Astro.url.pathname.replace(/^\/|\/$/g, "") || "index";
+const image = Astro.props.image ?? `/og/${ogSlug}.png`;
 const fullTitle = title ? `${title} · Vitalii Buyan` : "Vitalii Buyan · DevOps / SRE";
 const path = Astro.url.pathname;
 const nav = [
@@ -33,6 +35,9 @@ const canonical = new URL(path, Astro.site);
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:image" content={new URL(image, Astro.site)} />
   <meta property="og:url" content={canonical} />
   <meta name="twitter:card" content="summary_large_image" />
   <script is:inline>
