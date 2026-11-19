@@ -24,14 +24,17 @@ methods.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? -1 : 1));
     </div>
     <div class="panel">
       <div class="ph"><span class="t">gpu-queue · simulation</span><span>1 GPU · 3 tenants</span></div>
-      <svg id="viz" viewBox="0 0 560 300" role="img" aria-label="Animated simulation: jobs from two teams and Kubernetes wait in one fair queue for a single GPU; GPU pods that try to skip the queue are denied at admission."></svg>
+      <svg id="viz" viewBox="0 0 560 280" role="img" aria-label="Animated simulation: jobs from two teams and Kubernetes take turns on a single GPU through one fair queue; GPU pods that try to skip the queue are denied at admission."></svg>
       <div class="legend">
         <span><i style="background:var(--a)"></i>team A</span>
         <span><i style="background:var(--b)"></i>team B</span>
         <span><i style="background:var(--k)"></i>k8s pod</span>
         <span><i style="background:var(--deny)"></i>bypass → denied at admission</span>
       </div>
-      <div class="log" id="log" aria-hidden="true"></div>
+      <div class="sim-split" aria-hidden="true">
+        <div class="kc" id="kc"></div>
+        <div class="qt"><div class="qt-title">$ gpu queue</div><div class="qr qh"><span>STATE</span><span>TENANT</span><span>JOB</span><span>WAIT</span></div><div id="qrows"></div></div>
+      </div>
     </div>
   </section>
 
@@ -84,61 +87,101 @@ methods.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? -1 : 1));
 
   <script is:inline>
   (function () {
-    const svg = document.getElementById("viz"), log = document.getElementById("log"), NS = "http://www.w3.org/2000/svg";
+    const svg = document.getElementById("viz"), NS = "http://www.w3.org/2000/svg";
     if (!svg) return;
     const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-    const C = () => ({ A: css("--a"), B: css("--b"), K: css("--k"), X: css("--deny"), line: css("--line"), muted: css("--muted"), dim: css("--dim"), text: css("--text"), panel: css("--code-bg") });
-    let P = C();
+    const P = { A: css("--a"), B: css("--b"), K: css("--k"), X: css("--deny"), line: css("--line"), muted: css("--muted"), dim: css("--dim"), text: css("--text"), code: css("--code-bg") };
     const F = "JetBrains Mono, monospace";
-    function el(t, a, p = svg) { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; }
-    const box = (x, y, w, h, r) => el("rect", { x, y, width: w, height: h, rx: r, fill: P.panel, stroke: P.line });
-    const label = (x, y, txt, fill, size = 11, anchor = "middle") => { const t = el("text", { x, y, "text-anchor": anchor, fill, "font-size": size, "font-family": F }); t.textContent = txt; return t; };
-    box(20, 40, 110, 220, 10); label(75, 30, "tenants", P.muted);
-    [["team A", P.A, 85], ["team B", P.B, 150], ["kubernetes", P.K, 215]].forEach(([n, c, y]) => { el("circle", { cx: 42, cy: y, r: 6, fill: c }); label(54, y + 4, n, P.text, 12, "start"); });
-    box(190, 120, 180, 60, 10); label(280, 110, "fair queue", P.muted);
-    const gate = el("rect", { x: 160, y: 190, width: 4, height: 70, fill: P.X, opacity: 0 });
-    label(162, 278, "admission", P.X, 10);
-    el("rect", { x: 430, y: 95, width: 110, height: 110, rx: 12, fill: P.panel, stroke: P.line });
-    label(485, 85, "GPU", P.muted);
-    const glow = el("rect", { x: 430, y: 95, width: 110, height: 110, rx: 12, fill: "none", stroke: P.A, "stroke-width": 2, opacity: 0 });
-    const gpuLabel = label(485, 156, "idle", P.dim, 12);
+    const el = (t, a, p = svg) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+    const label = (x, y, s, fill, size = 11, anchor = "middle") => { const t = el("text", { x, y, "text-anchor": anchor, fill, "font-size": size, "font-family": F }); t.textContent = s; return t; };
+
+    // scene: tenants -> admission -> fair queue -> GPU -> done
+    el("rect", { x: 16, y: 40, width: 112, height: 210, rx: 10, fill: P.code, stroke: P.line }); label(72, 30, "tenants", P.muted);
+    const lanes = { A: 85, B: 145, K: 205 };
+    [["team A", "A"], ["team B", "B"], ["kubernetes", "K"]].forEach(([n, k]) => { el("circle", { cx: 36, cy: lanes[k], r: 6, fill: P[k] }); label(48, lanes[k] + 4, n, P.text, 12, "start"); });
+    const QX = 172, QY = 118, QW = 196, SLOT = 26, SLOTS = 7;
+    el("rect", { x: QX, y: QY, width: QW, height: 56, rx: 10, fill: P.code, stroke: P.line }); label(QX + QW / 2, QY - 10, "fair queue", P.muted);
+    const more = label(QX + QW - 20, QY + 32, "", P.muted, 11);
+    const gate = el("rect", { x: 146, y: 182, width: 4, height: 60, rx: 2, fill: P.X, opacity: 0 }); label(148, 262, "admission", P.X, 10);
+    el("rect", { x: 410, y: 82, width: 128, height: 100, rx: 12, fill: P.code, stroke: P.line }); label(474, 72, "GPU", P.muted);
+    const glow = el("rect", { x: 410, y: 82, width: 128, height: 100, rx: 12, fill: "none", "stroke-width": 2, opacity: 0 });
+    const gpuText = label(474, 160, "idle", P.dim, 11);
+    const bar = el("rect", { x: 426, y: 168, width: 0, height: 3, rx: 1.5, fill: P.A });
+    el("rect", { x: 410, y: 206, width: 128, height: 44, rx: 10, fill: P.code, stroke: P.line, "stroke-dasharray": "4 4" }); label(474, 200, "done", P.muted, 10);
+    const doneText = label(500, 233, "0", P.text, 14);
     const layer = el("g", {});
-    const names = { A: "team-a", B: "team-b", K: "kube-gpu" }, shown = { A: "team A", B: "team B", K: "k8s pod" };
-    let queue = [], holder = null, t = 0, id = 0; const jobs = [];
-    const stamp = () => new Date().toISOString().slice(11, 19);
-    function addLog(txt, cls) { const d = document.createElement("div"); d.textContent = txt; if (cls) d.className = cls; log.prepend(d); while (log.children.length > 3) log.lastChild.remove(); }
-    function spawn(kind) {
-      const y = { A: 85, B: 150, K: 215 }[kind], n = ++id;
-      const c = el("circle", { cx: 42, cy: y, r: 7, fill: P[kind] }, layer);
-      const job = { kind, c, x: 42, y, n, tx: 200 + queue.length * 24, ty: 150, state: "toQueue" };
-      if (kind === "K" && Math.random() < 0.28) { job.bypass = true; job.tx = 162; job.ty = 215; c.setAttribute("fill", P.X); } else queue.push(job);
-      jobs.push(job);
+
+    // simulation
+    const names = { A: "team-a", B: "team-b", K: "k8s" }, prefix = { A: "a", B: "b", K: "train" };
+    let id = 0, lastKind = "", queue = [], holder = null, done = 0, jobs = [], last = performance.now(), nextSpawn = 600, clock = 0;
+    const listeners = [];
+    const emit = (type, job, extra = {}) => listeners.forEach((f) => f({ type, job, ...extra }));
+    function spawn() {
+      const r = Math.random(); const kind = r < 0.36 ? "A" : r < 0.7 ? "B" : "K"; const n = ++id;
+      const j = { id: n, kind, name: (kind === "K" ? "pod/" : "job/") + prefix[kind] + "-" + n, x: 36, y: lanes[kind], tx: 36, ty: lanes[kind], t0: clock, c: el("circle", { cx: 36, cy: lanes[kind], r: 7, fill: P[kind] }, layer) };
+      if (kind === "K" && Math.random() < 0.3) { j.bypass = true; j.tx = 148; j.ty = 205; j.c.setAttribute("fill", P.X); jobs.push(j); emit("APPLY", j); return; }
+      queue.push(j); jobs.push(j); emit("ENQUEUE", j, { pos: queue.length });
     }
-    function step() {
-      t++;
-      if (t % 55 === 0) { const r = Math.random(); spawn(r < 0.38 ? "A" : r < 0.7 ? "B" : "K"); }
-      queue.forEach((j, i) => { j.tx = 200 + i * 24; j.ty = 150; });
-      if (!holder && queue.length && queue[0].x >= queue[0].tx - 1) {
-        holder = queue.shift(); holder.state = "toGpu"; holder.tx = 485; holder.ty = 150; holder.until = t + 130 + Math.random() * 120;
-        addLog(`${stamp()}  turn → ${names[holder.kind]}  job#${holder.n}`, "g");
+    function layout() {
+      queue.forEach((j, i) => { const slot = Math.min(i, SLOTS - 1); j.tx = QX + 18 + slot * SLOT; j.ty = QY + 28; j.c.setAttribute("opacity", i < SLOTS - 1 || queue.length === SLOTS ? 1 : 0); });
+      more.textContent = queue.length > SLOTS ? "+" + (queue.length - (SLOTS - 1)) : "";
+    }
+    function step(now) {
+      const dt = Math.min(now - last, 100); last = now; clock += dt;
+      nextSpawn -= dt;
+      if (nextSpawn <= 0) { if (queue.length < 9) spawn(); nextSpawn = 1300 + Math.random() * 1100; }
+      layout();
+      if (!holder && queue.length && Math.abs(queue[0].x - queue[0].tx) < 2) {
+        // fair: the oldest job of a different tenant than the last one, if there is one
+        let pick = queue.findIndex((j) => j.kind !== lastKind && Math.abs(j.x - j.tx) < 2); if (pick < 0) pick = 0;
+        holder = queue.splice(pick, 1)[0]; lastKind = holder.kind; holder.tx = 474; holder.ty = 118;
+        holder.run = 1800 + Math.random() * 1400; holder.started = clock;
+        emit("RUN", holder, { wait: (clock - holder.t0) / 1000 });
       }
-      if (holder && t > holder.until) { holder.state = "done"; holder.tx = 600; holder = null; }
-      const on = holder && holder.x > 470;
-      glow.setAttribute("opacity", on ? 1 : 0);
-      if (on) { glow.setAttribute("stroke", P[holder.kind]); gpuLabel.textContent = shown[holder.kind]; gpuLabel.setAttribute("fill", P[holder.kind]); }
-      else { gpuLabel.textContent = queue.length ? "handing off" : "idle"; gpuLabel.setAttribute("fill", P.dim); }
+      if (holder) {
+        const f = Math.min((clock - holder.started) / holder.run, 1); bar.setAttribute("width", 96 * f); bar.setAttribute("fill", P[holder.kind]);
+        glow.setAttribute("opacity", 1); glow.setAttribute("stroke", P[holder.kind]); gpuText.textContent = names[holder.kind] + " #" + holder.id; gpuText.setAttribute("fill", P[holder.kind]);
+        if (f >= 1) { const h = holder; h.tx = 440; h.ty = 228; h.finish = true; holder = null; }
+      } else { glow.setAttribute("opacity", 0); bar.setAttribute("width", 0); gpuText.textContent = queue.length ? "handing off" : "idle"; gpuText.setAttribute("fill", P.dim); }
       for (let i = jobs.length - 1; i >= 0; i--) {
-        const j = jobs[i]; j.x += (j.tx - j.x) * 0.06; j.y += (j.ty - j.y) * 0.06; j.c.setAttribute("cx", j.x); j.c.setAttribute("cy", j.y);
-        if (j.bypass && !j.denied && Math.abs(j.x - j.tx) < 2) {
-          j.denied = true; gate.setAttribute("opacity", 1); setTimeout(() => gate.setAttribute("opacity", 0), 400);
-          addLog(`${stamp()}  DENIED pod/gpu-job-${j.n}: GPU pods must use the queue`, "d"); j.tx = -40;
-        }
-        if ((j.denied && j.x < 0) || (j.state === "done" && j.x > 590)) { j.c.remove(); jobs.splice(i, 1); }
+        const j = jobs[i]; j.x += (j.tx - j.x) * 0.09; j.y += (j.ty - j.y) * 0.09; j.c.setAttribute("cx", j.x); j.c.setAttribute("cy", j.y);
+        if (j.bypass && !j.denied && Math.abs(j.x - j.tx) < 2) { j.denied = true; gate.setAttribute("opacity", 1); setTimeout(() => gate.setAttribute("opacity", 0), 450); j.tx = 138; j.ty = 230; j.back = true; }
+        if (j.back) { j.c.setAttribute("opacity", Math.max(0, (j.x - 138) / 12)); if (Math.abs(j.x - j.tx) < 1) { j.c.remove(); jobs.splice(i, 1); continue; } }
+        if (j.finish && Math.abs(j.y - j.ty) < 1.5) { j.c.remove(); jobs.splice(i, 1); done++; doneText.textContent = done; }
       }
-      requestAnimationFrame(step);
     }
-    spawn("A"); spawn("B"); spawn("K");
-    step();
+    setInterval(() => step(performance.now()), 16);
+
+    // left: the Kubernetes side, typed like a real terminal
+    const kc = document.getElementById("kc"), rows = document.getElementById("qrows"); const typeQ = []; let typing = false;
+    const keep = (box, max) => { while (box.children.length > max) box.firstChild.remove(); };
+    function pushLines(lines) { if (typeQ.length > 3) return; typeQ.push(lines); if (!typing) nextType(); }
+    function nextType() {
+      const lines = typeQ.shift(); if (!lines) { typing = false; return; } typing = true;
+      const [cmd, ...outs] = lines; const d = document.createElement("div"); d.className = "cmd"; d.innerHTML = "<i>$</i> "; kc.appendChild(d);
+      let i = 0; const span = document.createElement("span"); d.appendChild(span);
+      (function tick() {
+        if (i < cmd.length) { span.textContent = cmd.slice(0, ++i); setTimeout(tick, 18); }
+        else { outs.forEach(([cls, txt]) => { const o = document.createElement("div"); o.className = cls; o.textContent = txt; kc.appendChild(o); }); keep(kc, 18); setTimeout(nextType, 350); }
+      })();
+    }
+    listeners.push((e) => {
+      if (e.job.kind !== "K") return;
+      const file = e.job.name.replace("pod/", "") + ".yaml";
+      if (e.type === "ENQUEUE") pushLines([`kubectl apply -f ${file}`, ["ok", `${e.job.name} created`], ["out", `queued for GPU: position ${e.pos}`]]);
+      if (e.type === "APPLY") pushLines([`kubectl apply -f ${file.replace("train", "rogue")}`, ["err", "Error from server (Forbidden): ValidatingAdmissionPolicy 'gpu-must-queue' denied request: GPU pods must run through the queue client"]]);
+      if (e.type === "RUN") pushLines([`kubectl logs -f ${e.job.name}`, ["out", `[turn] GPU granted after ${e.wait.toFixed(1)}s, starting training`]]);
+    });
+    pushLines(["kubectl get nodes -l gpu=true", ["out", "NAME         STATUS   GPU   QUEUE"], ["ok", "gpu-node-1   Ready    1     fair-queue"]]);
+
+    // right: `gpu queue` as a live table
+    function table() {
+      const list = []; if (holder) list.push(["RUNNING", holder]); queue.forEach((j) => list.push(["QUEUED", j]));
+      const shown = list.slice(0, 7);
+      rows.innerHTML = shown.map(([s, j]) => `<div class="qr ${s === "RUNNING" ? "run" : ""}"><span>${s}</span><span>${names[j.kind]}</span><span>${j.name.split("/")[1]}</span><span>${((s === "RUNNING" ? j.started - j.t0 : clock - j.t0) / 1000).toFixed(0)}s</span></div>`).join("")
+        + (list.length > 7 ? `<div class="qmore">… ${list.length - 7} more</div>` : "") + (list.length ? "" : `<div class="qmore">queue empty</div>`);
+    }
+    setInterval(table, 250);
   })();
   </script>
 </Base>
